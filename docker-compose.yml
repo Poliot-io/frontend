@@ -1,0 +1,20 @@
+version: '3'
+services:
+  next:
+    # tomar la imagen del dockerfile
+    build: .
+    container_name: backend
+    working_dir: /app
+    restart: unless-stopped
+    volumes:
+      - .:/app
+    command: >
+      sh -c "npm run dev"
+    ports:
+      - 5173:5173
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - .env
+    expose:
+      - 5173
