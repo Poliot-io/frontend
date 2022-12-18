@@ -45,7 +45,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
       h="100vh"
       bg={useColorModeValue("gray.100", "gray.900")}
       transition="0.5s ease-out"
-      id="1"
+      overflow="auto"
     >
       <SidebarContent onClose={() => onClose} />
       <Drawer

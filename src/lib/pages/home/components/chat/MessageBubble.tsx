@@ -1,6 +1,6 @@
 // Libraries
 import { useEffect, useState } from "react";
-import { Flex, Text, Box } from "@chakra-ui/react";
+import { Flex, Text, Box, Image } from "@chakra-ui/react";
 // Components
 
 // Services
@@ -27,6 +27,11 @@ const MessageBubble = ({ message }: { message: MessageProps }) => {
 
   const isMe = itsMyDoc(userId);
 
+  const isURL = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.match(urlRegex);
+  };
+
   return (
     <Flex direction="column">
       <Box
@@ -38,7 +43,7 @@ const MessageBubble = ({ message }: { message: MessageProps }) => {
         mb={4}
         maxW="300px"
       >
-        <Text>{text}</Text>
+        {isURL(text) ? <Image src={text} alt="gif" /> : <Text>{text}</Text>}
       </Box>
       <Text
         fontSize="xs"

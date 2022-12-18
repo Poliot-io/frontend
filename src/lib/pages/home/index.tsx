@@ -1,5 +1,5 @@
 // Libraries
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
   Avatar,
   AvatarGroup,
@@ -11,6 +11,7 @@ import {
   Tooltip,
 } from "@chakra-ui/react";
 import { v4 as uuidv4 } from "uuid";
+import { useScroll } from "react-scroll-hooks";
 
 // Components
 import SectionContainer from "./components/SectionContainer";
@@ -43,6 +44,13 @@ import { getCurrentDate, getUserIdFromJWT } from "./utils";
 import "./index.css";
 
 const Home = () => {
+  const containerRef: any = useRef();
+  const elementRef: any = useRef();
+  const scrollSpeed = 100000;
+  const { scrollToElement, scrollToY } = useScroll({
+    scrollSpeed,
+    containerRef,
+  });
   const [chatId, setChatId] = useState<string | null>(null);
   const [chatType, setChatType] = useState<string | null>("global");
   const [messages, setMessages] = useState<MessageProps[]>([]);
@@ -50,12 +58,7 @@ const Home = () => {
   const [users, setUsers] = useState<ProfileProps[]>([]);
   const profile: any = useProfile();
 
-  const scrollToBottom = () => {
-    const chat = document.getElementById("chat");
-    if (chat) {
-      chat.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  const scrollTo = () => scrollToElement(elementRef);
 
   const setStartupUsers = async () => {
     const users: PaginableProps = await userService.find({
@@ -75,8 +78,8 @@ const Home = () => {
     userService.service.on("patched", (_: any) => setStartupUsers());
 
     chatService.service.on("patched", (chat: ChatProps) => {
-      scrollToBottom();
       setMessages((_) => chat.messages);
+      scrollTo();
     });
 
     chatService.findByType("global").then((paginable: PaginableProps) => {
@@ -90,7 +93,13 @@ const Home = () => {
   }, []);
 
   return (
-    <Grid as="main" gap={4} templateColumns="repeat(4, 1fr)" h="100vh">
+    <Grid
+      as="main"
+      gap={4}
+      templateColumns="repeat(4, 1fr)"
+      h="100vh"
+      overflow="clip"
+    >
       <SectionContainer>
         <ChatProfile profile={profile} />
         <OnlineFriends users={users} />
@@ -103,7 +112,12 @@ const Home = () => {
         position="relative"
       >
         <Searchbar />
-        <GlobalChat messages={messages} />
+        <GlobalChat
+          messages={messages}
+          containerRef={containerRef}
+          elementRef={elementRef}
+          scrollTo={scrollTo}
+        />
         <ChatForm chatId={chatId} />
       </SectionContainer>
 
@@ -138,16 +152,6 @@ const OnlineFriends = ({ users }: any) => {
               </Tooltip>
             );
           })}
-          {/* <Avatar name="Ryan Florence" src="https://bit.ly/ryan-florence" />
-          <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
-          <Avatar name="Kent Dodds" src="https://bit.ly/kent-c-dodds" />
-          <Avatar name="Prosper Otemuyiwa" src="https://bit.ly/prosper-baba" />
-          <Avatar name="Christian Nwamba" src="https://bit.ly/code-beast" />
-          <Avatar name="Ryan Florence" src="https://bit.ly/ryan-florence" />
-          <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
-          <Avatar name="Kent Dodds" src="https://bit.ly/kent-c-dodds" />
-          <Avatar name="Prosper Otemuyiwa" src="https://bit.ly/prosper-baba" />
-          <Avatar name="Christian Nwamba" src="https://bit.ly/code-beast" /> */}
         </AvatarGroup>
         <Divider maxW="180px" />
       </Flex>

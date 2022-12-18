@@ -8,10 +8,10 @@ import {
   keyframes,
 } from "@chakra-ui/react";
 import { Formik, Field } from "formik";
-import { FaEllipsisV, FaPaperPlane } from "react-icons/fa";
+import { FaPaperPlane } from "react-icons/fa";
 import { motion } from "framer-motion";
 // Components
-
+import GifPopover from "./gifs/Popover";
 // Services
 import chatService from "../../services/chat.service";
 // Hooks
@@ -44,10 +44,14 @@ const Form = ({ chatId, profilePic }: any) => {
         return errors;
       }}
       onSubmit={async (values, { setSubmitting, setValues, setTouched }) => {
-        const data: any = values;
         const userId = getUserIdFromJWT();
-        data.userId = userId;
-        await chatService.addMessage(chatId, data);
+        let message: any = {};
+
+        message.userId = userId;
+        message.text = values.text;
+
+        await chatService.addMessage(chatId, message);
+
         setValues({ text: "" });
         setTouched({ text: false });
         setSubmitting(false);
@@ -76,14 +80,7 @@ const Form = ({ chatId, profilePic }: any) => {
                   }}
                 />
               </Box>
-              <IconButton
-                aria-label="three dots"
-                icon={<FaEllipsisV />}
-                variant="ghost"
-                colorScheme="blue"
-                size="md"
-                ml={2}
-              />
+              <GifPopover chatId={chatId} />
               <IconButton
                 aria-label="send fly paper icon"
                 icon={<FaPaperPlane />}
