@@ -24,8 +24,7 @@ import { IAuthLoginErrors } from "lib/@auth/interfaces/Auth";
 // utils
 import { getAuthLoginErrors } from "../../@auth/utils/authUtils";
 import { toast } from "react-hot-toast";
-import { login } from "lib/@feathers/utils";
-import feathersClient from "lib/@feathers";
+import { loginJWT, loginLocal } from "lib/@feathers/utils";
 
 const notify = (message: string) => toast(message);
 
@@ -64,7 +63,8 @@ export default function Login() {
     if (loginErrors.email.error || loginErrors.password.error) return;
 
     try {
-      const res = await login(emailValue, passwordValue);
+      const res = await loginJWT(emailValue, passwordValue);
+
       navigate("/");
     } catch (error: any) {
       notify(error.message);

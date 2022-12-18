@@ -11,7 +11,7 @@ export const logout = () => {
 	userService.service.patch(getUserIdFromJWT(), { online: false });
 };
 
-export const login = async (email: string, password: string) => {
+export const loginLocal = async (email: string, password: string) => {
 	const body = {
 		email,
 		password,
@@ -21,7 +21,7 @@ export const login = async (email: string, password: string) => {
 	try {
 		const response: any = await feathersClient?.authenticate(body);
 		const res = await feathersClient.authenticate({
-			strategy: "jwt",
+			strategy: "local",
 			accessToken: response.accessToken,
 		})
 		return res;
@@ -29,3 +29,26 @@ export const login = async (email: string, password: string) => {
 		throw new Error(error.message);
 	}
 };
+
+export const loginJWT = async (email: string, password: string) => {
+
+	try {
+		const res: any = await fetch("http://localhost:3001/authentication", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "*",
+			},
+			body: JSON.stringify({ strategy: "local", email, password }),
+		})
+		const data = await res.json()
+
+		const response: any = await feathersClient?.authenticate({
+			strategy: "jwt",
+			accessToken: data.accessToken,
+		});
+		return response;
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
+}
