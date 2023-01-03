@@ -47,11 +47,12 @@ const GlobalChat = ({
       </Stat>
       <Box
         h="680px"
-        overflowY="scroll"
+        overflow="scroll"
         position="relative"
         mt={2}
         ref={containerRef}
         onScroll={handleScroll}
+        style={{ scrollbarWidth: "thin" }}
       >
         <Flex direction="column" h="full" pr="80px" pt={3} position="relative">
           {messages.map((message: MessageProps) => {

@@ -15,7 +15,9 @@ const useGiphy = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://api.giphy.com/v1/gifs/trending?api_key=6wFW7z1QzgfOfkWXUFsFANV5PYGcV83r&limit=${LIMIT}&offset=${offset}`
+        `http://api.giphy.com/v1/gifs/trending?api_key=${
+          import.meta.env.VITE_GIPHY_API_KEY
+        }&limit=${LIMIT}&offset=${offset}`
       );
       const data = await response.json();
       setGifs(data.data);

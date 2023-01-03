@@ -33,7 +33,7 @@ export const loginLocal = async (email: string, password: string) => {
 export const loginJWT = async (email: string, password: string) => {
 
 	try {
-		const res: any = await fetch("http://localhost:3001/authentication", {
+		const res: any = await fetch(`${import.meta.env.VITE_PUBLIC_DNS}/authentication`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
